@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             alert(data.message);
-            window.location.href = '/'; // Redireciona para a página inicial
+            window.location.href = '/login.js'; // Redireciona para a página inicial
         })
         .catch(error => console.error('Erro:', error));
     });

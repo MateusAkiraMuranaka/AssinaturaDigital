@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Despesa</title>
+</head>
+<body>
+    <h2>Cadastrar Novo Relatório de Despesa</h2>
+
+    <form id="cadastrarDespesaForm">
+        <label for="data">Data:</label><br>
+        <input type="date" id="data" name="data"><br>
+        <label for="descricao">Descrição:</label><br>
+        <textarea id="descricao" name="descricao" rows="4" cols="50"></textarea><br>
+        <label for="valor">Valor:</label><br>
+        <input type="text" id="valor" name="valor"><br>
+        <label for="arquivo">Arquivo PDF:</label><br>
+        <input type="file" id="arquivo" name="arquivo"><br><br>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cadastrarDespesaForm = document.getElementById('cadastrarDespesaForm');
+
+            cadastrarDespesaForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const data = document.getElementById('data').value;
+                const descricao = document.getElementById('descricao').value;
+                const valor = document.getElementById('valor').value;
+                const arquivo = document.getElementById('arquivo').files[0]; // Arquivo PDF
+
+                const formData = new FormData();
+                formData.append('data', data);
+                formData.append('descricao', descricao);
+                formData.append('valor', valor);
+                formData.append('arquivo', arquivo);
+
+                fetch('/despesas', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    // Redirecionar ou fazer outra ação após o cadastro
+                })
+                .catch(error => console.error('Erro:', error));
+            });
+        });
+    </script>
+</body>
+</html>

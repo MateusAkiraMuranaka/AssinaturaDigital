@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios de Despesas Pendentes</title>
+</head>
+<body>
+    <h2>Relatórios de Despesas Pendentes</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Arquivo PDF</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaDespesasPendentes">
+
+        </tbody>
+    </table>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // Faça uma requisição ao servidor para obter os relatórios de despesas pendentes
+    fetch('/despesas-pendentes')
+        .then(response => response.json())
+        .then(data => {
+            // Para cada relatório pendente recebido do servidor, crie uma linha na tabela
+            const tabelaDespesasPendentes = document.getElementById('tabelaDespesasPendentes');
+            data.relatorios.forEach(relatorio => {
+                const row = tabelaDespesasPendentes.insertRow();
+                row.innerHTML = `
+                    <td>${relatorio.id}</td>
+                    <td>${relatorio.data}</td>
+                    <td>${relatorio.descricao}</td>
+                    <td>${relatorio.valor}</td>
+                    <td><a href="${relatorio.arquivo_pdf}" target="_blank">Ver PDF</a></td>
+                    <td><button onclick="validarDespesa(${relatorio.id})">Validar</button></td>
+                `;
+            });
+        })
+        .catch(error => console.error('Erro ao buscar relatórios pendentes:', error));
+    });
+
+    // No mesmo arquivo JavaScript onde você lista os relatórios de despesas pendentes
+    function validarDespesa(id) {
+    // Faça uma requisição para o servidor para validar o relatório de despesa com o ID fornecido
+        fetch(`/validar-despesa/${id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: id }) // Envie o ID do relatório de despesa no corpo da requisição
+        })
+        .then(response => {
+            if (response.ok) {
+            // Se a validação foi bem-sucedida, recarregue a página para atualizar a lista de relatórios pendentes
+                window.location.reload();
+            } else {
+                console.error('Erro ao validar despesa:', response.status);
+            }
+        })
+    .catch(error => console.error('Erro ao validar despesa:', error));
+    }
+</script>
+
+</html>
