@@ -30,6 +30,33 @@ app.post('/funcionarios', (req, res) => {
     });
 });
 
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    // Buscar o usuário com base no nome dele
+    const sql = 'SELECT * FROM Funcionarios WHERE username = ?';
+    connection.query(sql, [username], (error, results) => {
+        if (error) {
+            console.error('Erro ao buscar usuário:', error);
+            res.status(500).json({ message: 'Erro interno do servidor' });
+        } else {
+            // Verifica se o usuário foi encontrado no banco de dados
+            if (results.length === 1) {
+                const user = results[0];
+                // Compara a senha fornecida com a senha armazenada no banco de dados
+                if (password === user.senha) {
+                    // Se as credenciais estiverem corretas, retorna o tipo de usuário
+                    res.status(200).json({ message: 'Login bem-sucedido', cargo: user.cargo });
+                } else {
+                    res.status(401).json({ message: 'Usuário ou senha incorretos' });
+                }
+            } else {
+                res.status(401).json({ message: 'Usuário não encontrado' });
+            }
+        }
+    });
+});
+
 app.get('/despesas-pendentes', (req, res) => {
 
     const relatoriosPendentes = []; // Suponha que você tenha obtido os relatórios pendentes do banco de dados
@@ -50,6 +77,29 @@ app.post('/validar-despesa/:id', (req, res) => {
         } else {
             console.log('Relatório de despesa validado com sucesso!', results);
             res.status(200).send('Relatório de despesa validado com sucesso!');
+        }
+    });
+});
+
+//usar rota de validar relatório
+app.use(validarRelatorioRouter);
+
+// Rota para assinar digitalmente um relatório
+app.post('/assinar-digitalmente', (req, res) => {
+    const { nome, documento, assinatura } = req.body;
+
+    // Salvar os dados na tabela AssinaturasDigitais
+    const sql = 'INSERT INTO AssinaturasDigitais (relatorio_id, gerente_id, data, assinatura) VALUES (?, ?, ?, ?)';
+    const data = new Date().toISOString().slice(0, 19).replace('T', ' '); // Data atual
+    const params = [relatorio_id, gerente_id, data, assinatura];
+
+    connection.query(sql, params, (error, results) => {
+        if (error) {
+            console.error('Erro ao assinar digitalmente:', error);
+            res.status(500).json({ message: 'Erro ao assinar digitalmente' });
+        } else {
+            res.status(200).json({ message: 'Assinatura digital realizada com sucesso' });
+            console.log('Assinado digitalmente!', results);
         }
     });
 });

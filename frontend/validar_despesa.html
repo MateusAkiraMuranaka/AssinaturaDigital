@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validar Relatórios de Despesa</title>
+</head>
+<body>
+    <h1>Validar Relatórios de Despesa</h1>
+
+    <!-- Exibição dos relatórios de despesa pendentes -->
+    <div id="relatoriosPendentes">
+        <!-- Os relatórios pendentes serão adicionados dinamicamente aqui -->
+    </div>
+
+    <form id="validarForm">
+        <!-- Campos ocultos para armazenar o ID do relatório e se foi aprovado -->
+        <input type="hidden" id="idRelatorio" name="idRelatorio" value="">
+        <input type="hidden" id="aprovado" name="aprovado" value="true">
+
+        <!-- Botão para enviar o formulário -->
+        <button type="submit">Validar Relatório</button>
+    </form>
+
+    <script>
+        // Lógica para buscar e exibir os relatórios pendentes
+        fetch('/relatorios-pendentes')
+            .then(response => response.json())
+            .then(data => {
+                const relatoriosPendentes = document.getElementById('relatoriosPendentes');
+                if (data.relatorios.length === 0) {
+                    relatoriosPendentes.innerHTML = '<p>Nenhum relatório de despesa pendente de validação.</p>';
+                } else {
+                    const table = document.createElement('table');
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Arquivo PDF</th>
+                                <th>Validar</th>
+                                <th>Assinar Digitalmente</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaRelatoriosPendentes">
+                            <!-- Os relatórios pendentes serão adicionados dinamicamente aqui -->
+                        </tbody>
+                    `;
+
+                    const tbody = table.querySelector('#tabelaRelatoriosPendentes');
+                    data.relatorios.forEach(relatorio => {
+                        const row = tbody.insertRow();
+                        row.innerHTML = `
+                            <td>${relatorio.id}</td>
+                            <td>${relatorio.data}</td>
+                            <td>${relatorio.descricao}</td>
+                            <td>${relatorio.valor}</td>
+                            <td><a href="${relatorio.arquivo_pdf}" target="_blank">Ver PDF</a></td>
+                            <td><button onclick="validarRelatorio(${relatorio.id})">Validar</button></td>
+                            <td><button onclick="assinarDigitalmente(${relatorio.id})">Assinar</button></td>
+                        `;
+                    });
+
+                    relatoriosPendentes.appendChild(table);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar relatórios pendentes:', error);
+            });
+        
+        // Função para validar um relatório de despesa
+        function validarRelatorio(idRelatorio) {
+            // Define o ID do relatório nos campos ocultos do formulário
+            document.getElementById('idRelatorio').value = idRelatorio;
+
+            // Chama a função para enviar o formulário
+            enviarFormulario();
+        }
+
+        // Função para enviar o formulário de validação para o backend
+        async function enviarFormulario() {
+            try {
+                const response = await fetch('/validar-relatorio', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: document.getElementById('idRelatorio').value,
+                        aprovado: document.getElementById('aprovado').value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message);
+                    // Atualize a interface do usuário conforme necessário
+                } else {
+                    console.error('Erro ao validar relatório:', data.message);
+                }
+            } catch (error) {
+                console.error('Erro ao fazer a requisição:', error);
+            }
+        }
+    </script>
+</body>
+</html>
