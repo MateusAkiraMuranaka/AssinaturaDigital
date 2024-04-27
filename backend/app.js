@@ -104,6 +104,37 @@ app.post('/assinar-digitalmente', (req, res) => {
     });
 });
 
+// Função para verificar a assinatura digital de um relatório
+async function verificarAssinatura(conteudoRelatorio, assinatura, chavePublica) {
+    const options = {
+        message: await openpgp.createMessage({ text: conteudoRelatorio }),
+        signature: await openpgp.readSignature({ binary: assinatura }),
+        verificationKeys: await openpgp.readKey({ binary: chavePublica }),
+    };
+
+    const verificado = await openpgp.verify(options);
+    return verificado.signatures[0].valid;
+}
+
+// Rota para verificar a assinatura digital de um relatório
+app.post('/verificar-assinatura', async (req, res) => {
+    const { relatorioId } = req.body;
+    try {
+        // Verifique a assinatura digital
+        const valid = await verificarAssinatura(conteudoRelatorio, assinatura, chavePublica);
+        if (valid) {
+            res.status(200).json({ message: 'Assinatura digital válida' });
+        } else {
+            res.status(400).json({ message: 'Assinatura digital inválida' });
+        }
+    } catch (error) {
+        console.error('Erro ao verificar assinatura:', error);
+        res.status(500).json({ message: 'Erro interno do servidor' });
+    }
+});
+
+module.exports = app; // Exporta o app Express
+
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
 });

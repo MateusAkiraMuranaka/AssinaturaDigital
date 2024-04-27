@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Assinatura Digital</title>
+</head>
+<body>
+    <h1>Verificar Assinatura Digital</h1>
+    <form id="verificarAssinaturaForm">
+        <label for="relatorioId">ID do Relatório:</label>
+        <input type="number" id="relatorioId" name="relatorioId">
+        <button type="submit">Verificar Assinatura</button>
+    </form>
+    <div id="resultadoVerificacao"></div>
+</body>
+<script>
+    document.getElementById('verificarAssinaturaForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const relatorioId = document.getElementById('relatorioId').value;
+
+        try {
+            const response = await fetch('/verificar-assinatura', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ relatorioId })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                document.getElementById('resultadoVerificacao').textContent = data.message;
+            } else {
+                console.error('Erro ao verificar assinatura:', data.message);
+            }
+        } catch (error) {
+            console.error('Erro ao fazer a requisição:', error);
+        }
+    });
+</script>
+</html>

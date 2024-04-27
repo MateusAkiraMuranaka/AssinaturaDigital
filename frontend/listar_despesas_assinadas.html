@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Relatórios de Despesas Assinados</title>
+</head>
+<body>
+    <h1>Relatórios de Despesas Assinados</h1>
+    <ul id="listaRelatorios">
+        <!-- Os relatórios assinados serão adicionados dinamicamente aqui -->
+    </ul>
+</body>
+<script>
+    // Lógica para buscar e exibir os relatórios de despesas assinados
+    fetch('/relatorios-assinados')
+        .then(response => response.json())
+        .then(data => {
+            const listaRelatorios = document.getElementById('listaRelatorios');
+            data.relatorios.forEach(relatorio => {
+                const item = document.createElement('li');
+                item.textContent = `Relatório ID: ${relatorio.id}, Assinado por: ${relatorio.nomeGerente}, Data de Assinatura: ${relatorio.dataAssinatura}`;
+                listaRelatorios.appendChild(item);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao buscar relatórios assinados:', error);
+        });
+</script>
+</html>
