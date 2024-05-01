@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const database = require('./database'); // Importa o módulo database.js
 const processarDespesaRouter = require('./processar_despesa'); // Importe a rota processar_despesa.js
+const validarRelatorioRouter = require('./validar_relatorio'); // Importe a rota validar_relatorio.js
 const path = require('path');
 
 const app = express();
