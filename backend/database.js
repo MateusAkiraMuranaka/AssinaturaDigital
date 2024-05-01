@@ -2,7 +2,7 @@ const mysql = require('mysql');
 
 // Configuração do banco de dados
 const connection = mysql.createConnection({
-    host: 'localhost',
+    host: '127.0.0.1:3306',
     user: 'root',
     password: 'Muranaka2002',
     database: 'assDig'

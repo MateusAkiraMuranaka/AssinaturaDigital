@@ -31,6 +31,11 @@ app.post('/funcionarios', (req, res) => {
     });
 });
 
+app.get('/funcionarios', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/cadastrar_funcionario.html'));
+});
+
+//logica da pagina de login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -56,6 +61,11 @@ app.post('/login', (req, res) => {
             }
         }
     });
+});
+
+//Rota para página de login
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/login.html'));
 });
 
 app.get('/despesas-pendentes', (req, res) => {
@@ -133,6 +143,12 @@ app.post('/verificar-assinatura', async (req, res) => {
         res.status(500).json({ message: 'Erro interno do servidor' });
     }
 });
+
+// Rota inicial
+app.get('/', (req, res) => {
+    res.send('Bem-vindo à minha aplicação!');
+});
+
 
 module.exports = app; // Exporta o app Express
 
