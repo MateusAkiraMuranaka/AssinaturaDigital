@@ -1,5 +1,10 @@
 # AssinaturaDigital
 
+Professor: Paulo Manseira
+Alunos:
+Mateus Akira de O. Muranaka
+Vitor Bansen Delfino
+
 Projeto para disciplina de Segurança da Internet na Faculdade
 
 Criando banco de dados com MySQL no MariaDB
