@@ -47,7 +47,6 @@
         .catch(error => console.error('Erro ao buscar relatórios pendentes:', error));
     });
 
-    // No mesmo arquivo JavaScript onde você lista os relatórios de despesas pendentes
     function validarDespesa(id) {
     // Faça uma requisição para o servidor para validar o relatório de despesa com o ID fornecido
         fetch(`/validar-despesa/${id}`, {

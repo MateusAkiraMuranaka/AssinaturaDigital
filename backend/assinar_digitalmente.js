@@ -1,3 +1,5 @@
+const enviarEmail = require('./enviar_email');
+
 document.getElementById('assinarForm').addEventListener('submit', async function(event) {
     event.preventDefault();
     
@@ -21,6 +23,11 @@ document.getElementById('assinarForm').addEventListener('submit', async function
         if (response.ok) {
             // Exibir mensagem de sucesso
             document.getElementById('message').innerHTML = `<p>${data.message}</p>`;
+             // Enviar e-mail de notificação
+             const destinatario = 'email.do.funcionario@example.com'; // Defina o e-mail do destinatário
+             const assunto = 'Relatório Assinado Digitalmente';
+             const corpo = 'Seu relatório foi assinado digitalmente com sucesso.';
+             enviarEmail(destinatario, assunto, corpo);
         } else {
             // Exibir mensagem de erro
             document.getElementById('message').innerHTML = `<p>${data.message}</p>`;

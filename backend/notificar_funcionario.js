@@ -1,7 +1,6 @@
 // Importar a biblioteca Nodemailer
 const nodemailer = require('nodemailer');
 
-// Configurar o transporte de e-mail
 // Configurações para o transporte de e-mail usando o Gmail
 const transporter = nodemailer.createTransport({
     service: 'gmail',

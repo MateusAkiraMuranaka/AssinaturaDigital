@@ -97,7 +97,8 @@
 
                 if (response.ok) {
                     alert(data.message);
-                    // Atualize a interface do usuário conforme necessário
+                    //direciona para o gestor assinar digitalmente
+                    window.location.href = 'assinar_digitalmente.html';
                 } else {
                     console.error('Erro ao validar relatório:', data.message);
                 }

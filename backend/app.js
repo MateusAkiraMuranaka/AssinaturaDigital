@@ -35,6 +35,18 @@ app.get('/funcionarios', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/cadastrar_funcionario.html'));
 });
 
+// Rota para listar os funcionários
+app.get('/funcionarios', (req, res) => {
+    // Consultar o banco de dados para obter os funcionários
+    connection.query('SELECT * FROM funcionarios', (error, results) => {
+      if (error) {
+        res.status(500).json({ message: 'Erro ao consultar os funcionários' });
+      } else {
+        res.json({ funcionarios: results });
+      }
+    });
+});
+
 //logica da pagina de login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;

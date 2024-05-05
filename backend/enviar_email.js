@@ -1,5 +1,3 @@
-// backend/enviar_email.js
-
 const nodemailer = require('nodemailer');
 
 // Configurações de transporte para enviar e-mails usando um serviço SMTP

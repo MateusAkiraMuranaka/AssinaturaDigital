@@ -1,25 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listar Funcionários</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listar Funcionários</title>
 </head>
 <body>
-    <h2>Lista de Funcionários</h2>
+  <h2>Lista de Funcionários</h2>
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Cargo</th>
-            </tr>
-        </thead>
-        <tbody id="funcionariosList"></tbody>
-    </table>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Cargo</th>
+      </tr>
+    </thead>
+    <tbody id="funcionariosList"></tbody>
+  </table>
 
-    <script src="../backend/listar_funcionarios.js"></script>
+  <script>
+    // Fazer uma solicitação AJAX para obter os funcionários
+    fetch('/funcionarios')
+      .then(response => response.json())
+      .then(data => {
+        const funcionariosList = document.getElementById('funcionariosList');
+        data.funcionarios.forEach(funcionario => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${funcionario.id}</td>
+            <td>${funcionario.nome}</td>
+            <td>${funcionario.email}</td>
+            <td>${funcionario.cargo}</td>
+          `;
+          funcionariosList.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error('Erro ao obter os funcionários:', error);
+      });
+  </script>
 </body>
 </html>
